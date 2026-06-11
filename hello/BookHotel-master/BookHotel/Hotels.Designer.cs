@@ -94,6 +94,7 @@
             this.Controls.Add(this.HeaderPanel);
             this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "Hotels";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sogo Hotel — Available Rooms";
             this.Load += new System.EventHandler(this.Hotels_Load);
             this.HeaderPanel.ResumeLayout(false);

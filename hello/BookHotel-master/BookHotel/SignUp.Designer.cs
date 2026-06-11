@@ -34,13 +34,13 @@
             this.ConfirmPasswordLabel = new System.Windows.Forms.Label();
             this.ConfirmPasswordBox = new System.Windows.Forms.TextBox();
             this.LoginLabel = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.DoneAccountLabel = new System.Windows.Forms.Label();
             this.PasswordLabel = new System.Windows.Forms.Label();
             this.EmailLabel = new System.Windows.Forms.Label();
             this.PasswordBox = new System.Windows.Forms.TextBox();
             this.EmailBox = new System.Windows.Forms.TextBox();
             this.CreateLabel = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.SignUpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -116,18 +116,6 @@
             this.LoginLabel.Text = "Log In";
             this.LoginLabel.Click += new System.EventHandler(this.LoginLabel_Click);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.BackgroundImage = global::BookHotel.Properties.Resources.goldfan;
-            this.pictureBox1.Image = global::BookHotel.Properties.Resources.ssfan;
-            this.pictureBox1.Location = new System.Drawing.Point(165, 40);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(45, 28);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
             // DoneAccountLabel
             // 
             this.DoneAccountLabel.AutoSize = true;
@@ -193,6 +181,18 @@
             this.CreateLabel.TabIndex = 0;
             this.CreateLabel.Text = "Create an Account";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.BackgroundImage = global::BookHotel.Properties.Resources.goldfan;
+            this.pictureBox1.Image = global::BookHotel.Properties.Resources.ssfan;
+            this.pictureBox1.Location = new System.Drawing.Point(165, 40);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(45, 28);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
             // SignUp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,6 +204,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SignUp";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sogo Hotel";
             this.Load += new System.EventHandler(this.SignUp_Load);
             this.SignUpPanel.ResumeLayout(false);

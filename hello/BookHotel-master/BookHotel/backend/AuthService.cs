@@ -1,13 +1,15 @@
-﻿using Supabase;
+﻿using Newtonsoft.Json;
+using Supabase;
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BookHotel.backend
 {
@@ -56,6 +58,21 @@ namespace BookHotel.backend
 
         [Column("role")]
         public string Role { get; set; }
+
+        [Column("email")]
+        public string Email { get; set; }
+
+        [Column("first_name")]
+        public string FirstName { get; set; }
+
+        [Column("middle_name")]
+        public string MiddleName { get; set; }
+
+        [Column("last_name")]
+        public string LastName { get; set; }
+
+        [Column("contact_num")]
+        public string ContactNum { get; set; }
     }
 
     public class RoomDto
@@ -134,20 +151,30 @@ namespace BookHotel.backend
             return _client;
         }
 
-        public static async Task<string> RegisterUser(
-            string email,
-            string password)
+        public static async Task<string> RegisterUser(string email, string password)
         {
             try
             {
                 var supabase = await Initialize();
 
-                var response =
-                    await supabase.Auth.SignUp(email, password);
+                var response = await supabase.Auth.SignUp(email, password);
 
-                return response.User != null
-                    ? "Success"
-                    : "Unknown Error";
+                if (response.User == null)
+                    return "Signup failed";
+
+                var userId = Guid.Parse(response.User.Id);
+
+                // (prevents duplicates + guarantees profile exists)
+                await supabase
+                    .From<UserProfile>()
+                    .Upsert(new UserProfile
+                    {
+                        Id = userId,
+                        Email = email,
+                        Role = "user"
+                    });
+
+                return "Success";
             }
             catch (Exception ex)
             {
@@ -309,16 +336,18 @@ namespace BookHotel.backend
             {
                 EnsureHttpConfigured();
 
-                // Build payload manually so room_id is a proper UUID string
                 var payload = new
                 {
-                    room_id = booking.RoomId.ToString(),   // ✅ explicit string UUID
+                    room_id = booking.RoomId.ToString(),
                     room_name = booking.RoomName,
                     user_id = booking.UserId,
                     check_in = booking.CheckIn.ToString("o"),
                     duration_hours = booking.DurationHours,
                     total_price = booking.TotalPrice,
                     status = booking.Status ?? "pending",
+
+                  
+                    created_at = DateTime.UtcNow.ToString("o")
                 };
 
                 var json = JsonConvert.SerializeObject(payload);
@@ -326,6 +355,7 @@ namespace BookHotel.backend
 
                 var req = new HttpRequestMessage(HttpMethod.Post,
                     url + "/rest/v1/bookings");
+
                 req.Content = content;
                 req.Headers.Add("Prefer", "return=minimal");
 
@@ -358,15 +388,21 @@ namespace BookHotel.backend
             {
                 var supabase = await Initialize();
 
-                var booking = new Booking
-                {
-                    Id = bookingId,
-                    Status = "approved"
-                };
+                // 1. Get booking first (to know roomId)
+                var booking = await supabase
+                    .From<Booking>()
+                    .Where(x => x.Id == bookingId)
+                    .Single();
 
+                // 2. Update booking status → APPROVED
                 await supabase
                     .From<Booking>()
-                    .Update(booking);
+                    .Where(x => x.Id == bookingId)
+                    .Set(x => x.Status, "approved")
+                    .Update();
+
+                // 3. Update room status → OCCUPIED
+                await SetRoomStatus(booking.RoomId, "occupied");
 
                 return "success";
             }
@@ -382,15 +418,21 @@ namespace BookHotel.backend
             {
                 var supabase = await Initialize();
 
-                var booking = new Booking
-                {
-                    Id = bookingId,
-                    Status = "rejected"
-                };
+                // 1. Get booking
+                var booking = await supabase
+                    .From<Booking>()
+                    .Where(x => x.Id == bookingId)
+                    .Single();
 
+                // 2. Update booking status → REJECTED
                 await supabase
                     .From<Booking>()
-                    .Update(booking);
+                    .Where(x => x.Id == bookingId)
+                    .Set(x => x.Status, "rejected")
+                    .Update();
+
+                // 3. Room becomes AVAILABLE again
+                await SetRoomStatus(booking.RoomId, "available");
 
                 return "success";
             }
@@ -399,5 +441,185 @@ namespace BookHotel.backend
                 return ex.Message;
             }
         }
+
+        public static async Task<string> UpdateRoom(Room room)
+        {
+            try
+            {
+                EnsureHttpConfigured();
+
+                var payload = new
+                {
+                    room_number = room.RoomNumber,
+                    room_name = room.RoomName,
+                    room_description = room.RoomDescription,
+                    weekday_price_3h = room.WeekdayPrice3h,
+                    weekend_price_3h = room.WeekendPrice3h,
+                    weekday_price_12h = room.WeekdayPrice12h,
+                    weekend_price_12h = room.WeekendPrice12h,
+                    status = room.Status,
+                    room_image_url = room.RoomImageUrl
+                };
+
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
+
+                var req = new HttpRequestMessage(
+                    new HttpMethod("PATCH"),
+                    url + "/rest/v1/rooms?id=eq." + room.Id
+                );
+
+                req.Content = new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json"
+                );
+
+                req.Headers.Add("Prefer", "return=minimal");
+
+                var response = await _http.SendAsync(req);
+
+                if (response.IsSuccessStatusCode)
+                    return "success";
+
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public static async Task<string> DeleteRoom(Guid roomId)
+        {
+            try
+            {
+                EnsureHttpConfigured();
+
+                var req = new HttpRequestMessage(
+                    HttpMethod.Delete,
+                    url + "/rest/v1/rooms?id=eq." + roomId
+                );
+
+                req.Headers.Add("Prefer", "return=minimal");
+
+                var response = await _http.SendAsync(req);
+
+                if (response.IsSuccessStatusCode)
+                    return "success";
+
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public static async Task<UserProfile> GetProfileById(Guid userId)
+        {
+            try
+            {
+                var supabase = await Initialize();
+
+                var response = await supabase
+                    .From<UserProfile>()
+                    .Where(x => x.Id == userId)
+                    .Single();
+
+                return response;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public static async Task<List<Booking>> GetUserRecentBookings(Guid userId)
+        {
+            try
+            {
+                var supabase = await Initialize();
+
+                var response = await supabase
+                    .From<Booking>()
+                    .Filter("user_id", Supabase.Postgrest.Constants.Operator.Equals, userId.ToString())
+                    .Order("created_at", Supabase.Postgrest.Constants.Ordering.Descending)
+                    .Limit(5)
+                    .Get();
+
+                return response.Models;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new List<Booking>();
+            }
+        }
+
+        public static async Task<string> UpdateProfile(UserProfile profile)
+        {
+            try
+            {
+                var supabase = await Initialize();
+
+                await supabase
+                    .From<UserProfile>()
+                    .Update(profile);
+
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public static async Task<List<BookingWithProfile>> GetBookingsWithProfileAsync()
+        {
+            var supabase = await Initialize();
+
+            var response = await supabase
+                .From<BookingWithProfile>()
+                .Select("*, profiles(*)")
+                .Get();
+
+            return response.Models;
+        }
+
+        public static async Task<string> SetRoomStatus(Guid roomId, string status)
+        {
+            try
+            {
+                EnsureHttpConfigured();
+
+                var json = JsonConvert.SerializeObject(new
+                {
+                    status = status
+                });
+
+                var req = new HttpRequestMessage(
+                    new HttpMethod("PATCH"),
+                    url + "/rest/v1/rooms?id=eq." + roomId
+                );
+
+                req.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                req.Headers.Add("Prefer", "return=minimal");
+
+                var response = await _http.SendAsync(req);
+
+                var result = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    return "FAILED: " + result;
+
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
     }
 }

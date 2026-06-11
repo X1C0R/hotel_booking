@@ -230,13 +230,15 @@ namespace BookHotel
 
         private void OpenBookingModal(backend.Room room)
         {
-            // 3. We can now cleanly pass the real user ID variable into the modal
+            MessageBox.Show(
+                $"ID: {room.Id}\n" +
+                $"Name: {room.RoomName}\n" +
+                $"User: {_loggedInUserId}"
+            );
+
             using (var modal = new BookingModal(room, _loggedInUserId))
             {
-                if (modal.ShowDialog(this) == DialogResult.OK)
-                {
-                    // Optional: Refresh your grid if needed
-                }
+                modal.ShowDialog(this);
             }
         }
 

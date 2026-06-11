@@ -30,5 +30,14 @@ namespace BookHotel.backend
 
         [Column("status")]
         public string Status { get; set; }
+
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class BookingWithProfile : Booking
+    {
+        [Newtonsoft.Json.JsonProperty("profiles")]
+        public UserProfile profile { get; set; }
     }
 }

@@ -27,27 +27,26 @@ namespace BookHotel
         {
             LoadRoomsAsCards.Controls.Clear();
 
-            // Show a loading label while fetching
+            // Show loading text
             var loadingLabel = new Label
             {
                 Text = "Loading rooms...",
                 ForeColor = Color.Gray,
                 Font = new Font("Segoe UI", 12),
                 AutoSize = true,
-                Location = new Point(20, 20),
+                Location = new Point(20, 20)
             };
+
             LoadRoomsAsCards.Controls.Add(loadingLabel);
 
             try
             {
-
                 var supabase = await BookHotel.backend.AuthService.Initialize();
 
                 var response = await supabase
                     .From<BookHotel.backend.Room>()
                     .Get();
 
-                // Clear the loading label now that data arrived
                 LoadRoomsAsCards.Controls.Clear();
 
                 if (response.Models == null || response.Models.Count == 0)
@@ -58,18 +57,26 @@ namespace BookHotel
                         ForeColor = Color.Gray,
                         Font = new Font("Segoe UI", 12),
                         AutoSize = true,
-                        Location = new Point(20, 20),
+                        Location = new Point(20, 20)
                     });
+
                     return;
                 }
 
-                // ✅ Suspend layout while adding cards — prevents flickering
                 LoadRoomsAsCards.SuspendLayout();
 
                 foreach (var room in response.Models)
                 {
                     RoomCard card = new RoomCard(room);
+
                     card.Margin = new Padding(8);
+
+                    // Refresh Admin page automatically after edit/delete
+                    card.RoomUpdated += async () =>
+                    {
+                        await RefreshRoomsAsync();
+                    };
+
                     LoadRoomsAsCards.Controls.Add(card);
                 }
 
@@ -78,13 +85,14 @@ namespace BookHotel
             catch (Exception ex)
             {
                 LoadRoomsAsCards.Controls.Clear();
+
                 LoadRoomsAsCards.Controls.Add(new Label
                 {
                     Text = "Error loading rooms: " + ex.Message,
                     ForeColor = Color.Red,
                     Font = new Font("Segoe UI", 10),
                     AutoSize = true,
-                    Location = new Point(20, 20),
+                    Location = new Point(20, 20)
                 });
             }
         }
@@ -127,9 +135,16 @@ namespace BookHotel
         private async void AddButton_Click(object sender, EventArgs e)
         {
             AddRoom roomForm = new AddRoom();
+
+            // safe subscription
+            roomForm.RoomSaved += () =>
+            {
+                _ = LoadRoomsAsync(); // fire-and-forget safe refresh
+            };
+
             roomForm.ShowDialog();
 
-            // ✅ Refresh cards after the add dialog closes
+            // optional fallback refresh after close
             await LoadRoomsAsync();
         }
 
@@ -141,7 +156,7 @@ namespace BookHotel
         private void BookBtn_Click(object sender, EventArgs e)
         {
             AdminBookings bookingsForm = new AdminBookings();
-            bookingsForm.ShowDialog();
+            bookingsForm.Show();
             this.Close();
         }
 
@@ -154,6 +169,26 @@ namespace BookHotel
 
             new Login().Show(); // ✅ replace Login with your actual login form class name
             this.Close();
+        }
+
+        private void LoadRoomsAsCards_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void SidebarPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void HeaderPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void RoomPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
         // ✅ REMOVED: RoomPanel_Paint and LoadRoomsAsCards_Paint

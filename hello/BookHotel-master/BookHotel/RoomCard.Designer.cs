@@ -51,12 +51,13 @@
             // 
             // pbRoomImage
             // 
-            this.pbRoomImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pbRoomImage.Location = new System.Drawing.Point(16, 3);
+            this.pbRoomImage.Location = new System.Drawing.Point(3, 3);
             this.pbRoomImage.Name = "pbRoomImage";
             this.pbRoomImage.Size = new System.Drawing.Size(344, 204);
+            this.pbRoomImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbRoomImage.TabIndex = 0;
             this.pbRoomImage.TabStop = false;
+            this.pbRoomImage.Click += new System.EventHandler(this.pbRoomImage_Click);
             // 
             // RoomNumber
             // 
@@ -127,6 +128,7 @@
             this.Controls.Add(this.pbRoomImage);
             this.Name = "RoomCard";
             this.Size = new System.Drawing.Size(657, 298);
+            this.Load += new System.EventHandler(this.RoomCard_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pbRoomImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

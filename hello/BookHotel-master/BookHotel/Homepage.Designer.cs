@@ -37,8 +37,9 @@
             this.RoomListPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.HotelPage = new System.Windows.Forms.Button();
             this.PictureBoxGallery = new System.Windows.Forms.PictureBox();
-            this.SogoLogoBox = new System.Windows.Forms.PictureBox();
+            this.ProfileBtn = new System.Windows.Forms.Button();
             this.logOut = new System.Windows.Forms.Button();
+            this.SogoLogoBox = new System.Windows.Forms.PictureBox();
             this.HeaderPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBoxGallery)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SogoLogoBox)).BeginInit();
@@ -47,6 +48,8 @@
             // HeaderPanel
             // 
             this.HeaderPanel.BackColor = System.Drawing.Color.Firebrick;
+            this.HeaderPanel.Controls.Add(this.ProfileBtn);
+            this.HeaderPanel.Controls.Add(this.logOut);
             this.HeaderPanel.Controls.Add(this.SogoLogoBox);
             this.HeaderPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.HeaderPanel.Location = new System.Drawing.Point(0, 0);
@@ -93,8 +96,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RoomListPanel.Location = new System.Drawing.Point(12, 631);
             this.RoomListPanel.Name = "RoomListPanel";
-            this.RoomListPanel.Size = new System.Drawing.Size(1041, 30);
+            this.RoomListPanel.Size = new System.Drawing.Size(1041, 81);
             this.RoomListPanel.TabIndex = 6;
+            this.RoomListPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.RoomListPanel_Paint);
             // 
             // HotelPage
             // 
@@ -120,6 +124,36 @@
             this.PictureBoxGallery.TabStop = false;
             this.PictureBoxGallery.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
+            // ProfileBtn
+            // 
+            this.ProfileBtn.BackColor = System.Drawing.Color.Firebrick;
+            this.ProfileBtn.FlatAppearance.BorderSize = 0;
+            this.ProfileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ProfileBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ProfileBtn.ForeColor = System.Drawing.Color.White;
+            this.ProfileBtn.Image = global::BookHotel.Properties.Resources.profile;
+            this.ProfileBtn.Location = new System.Drawing.Point(0, 24);
+            this.ProfileBtn.Name = "ProfileBtn";
+            this.ProfileBtn.Size = new System.Drawing.Size(96, 43);
+            this.ProfileBtn.TabIndex = 9;
+            this.ProfileBtn.UseVisualStyleBackColor = false;
+            this.ProfileBtn.Click += new System.EventHandler(this.ProfileBtn_Click);
+            // 
+            // logOut
+            // 
+            this.logOut.BackColor = System.Drawing.Color.Firebrick;
+            this.logOut.FlatAppearance.BorderSize = 0;
+            this.logOut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logOut.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logOut.ForeColor = System.Drawing.Color.White;
+            this.logOut.Image = global::BookHotel.Properties.Resources.logoutBtn;
+            this.logOut.Location = new System.Drawing.Point(962, 24);
+            this.logOut.Name = "logOut";
+            this.logOut.Size = new System.Drawing.Size(103, 43);
+            this.logOut.TabIndex = 8;
+            this.logOut.UseVisualStyleBackColor = false;
+            this.logOut.Click += new System.EventHandler(this.logOut_Click);
+            // 
             // SogoLogoBox
             // 
             this.SogoLogoBox.Image = global::BookHotel.Properties.Resources.sogo_letter;
@@ -130,27 +164,13 @@
             this.SogoLogoBox.TabIndex = 3;
             this.SogoLogoBox.TabStop = false;
             // 
-            // logOut
-            // 
-            this.logOut.BackColor = System.Drawing.Color.Firebrick;
-            this.logOut.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.logOut.ForeColor = System.Drawing.Color.White;
-            this.logOut.Location = new System.Drawing.Point(871, 582);
-            this.logOut.Name = "logOut";
-            this.logOut.Size = new System.Drawing.Size(182, 43);
-            this.logOut.TabIndex = 8;
-            this.logOut.Text = "Log-out";
-            this.logOut.UseVisualStyleBackColor = false;
-            this.logOut.Click += new System.EventHandler(this.logOut_Click);
-            // 
             // Homepage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(1065, 661);
-            this.Controls.Add(this.logOut);
+            this.ClientSize = new System.Drawing.Size(1065, 712);
             this.Controls.Add(this.HotelPage);
             this.Controls.Add(this.RoomListPanel);
             this.Controls.Add(this.LeftLabel);
@@ -161,6 +181,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Homepage";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sogo Hotel";
             this.Load += new System.EventHandler(this.Homepage_Load);
             this.HeaderPanel.ResumeLayout(false);
@@ -182,5 +203,6 @@
         private System.Windows.Forms.FlowLayoutPanel RoomListPanel;
         private System.Windows.Forms.Button HotelPage;
         private System.Windows.Forms.Button logOut;
+        private System.Windows.Forms.Button ProfileBtn;
     }
 }

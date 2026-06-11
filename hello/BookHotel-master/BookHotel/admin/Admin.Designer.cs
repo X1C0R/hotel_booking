@@ -20,20 +20,20 @@ namespace BookHotel
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Admin));
             this.HeaderPanel = new System.Windows.Forms.Panel();
-            this.SogoLogoBox = new System.Windows.Forms.PictureBox();
             this.AdminLabel = new System.Windows.Forms.Label();
             this.SidebarPanel = new System.Windows.Forms.Panel();
+            this.logoutBtn = new System.Windows.Forms.Label();
+            this.BookBtn = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.RoomsButton = new System.Windows.Forms.Label();
             this.RoomPanel = new System.Windows.Forms.TableLayoutPanel();
             this.AddButton = new System.Windows.Forms.Button();
             this.LoadRoomsAsCards = new System.Windows.Forms.FlowLayoutPanel();
-            this.BookBtn = new System.Windows.Forms.Label();
-            this.logoutBtn = new System.Windows.Forms.Label();
+            this.SogoLogoBox = new System.Windows.Forms.PictureBox();
             this.HeaderPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SogoLogoBox)).BeginInit();
             this.SidebarPanel.SuspendLayout();
             this.RoomPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SogoLogoBox)).BeginInit();
             this.SuspendLayout();
             // 
             // HeaderPanel
@@ -47,17 +47,7 @@ namespace BookHotel
             this.HeaderPanel.Name = "HeaderPanel";
             this.HeaderPanel.Size = new System.Drawing.Size(1071, 60);
             this.HeaderPanel.TabIndex = 0;
-            // 
-            // SogoLogoBox
-            // 
-            this.SogoLogoBox.Image = global::BookHotel.Properties.Resources.sogo_letter;
-            this.SogoLogoBox.Location = new System.Drawing.Point(34, 19);
-            this.SogoLogoBox.Name = "SogoLogoBox";
-            this.SogoLogoBox.Size = new System.Drawing.Size(77, 28);
-            this.SogoLogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.SogoLogoBox.TabIndex = 3;
-            this.SogoLogoBox.TabStop = false;
-            this.SogoLogoBox.Resize += new System.EventHandler(this.panel1_Resize);
+            this.HeaderPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.HeaderPanel_Paint);
             // 
             // AdminLabel
             // 
@@ -82,6 +72,33 @@ namespace BookHotel
             this.SidebarPanel.Name = "SidebarPanel";
             this.SidebarPanel.Size = new System.Drawing.Size(209, 617);
             this.SidebarPanel.TabIndex = 1;
+            this.SidebarPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.SidebarPanel_Paint);
+            // 
+            // logoutBtn
+            // 
+            this.logoutBtn.AutoSize = true;
+            this.logoutBtn.BackColor = System.Drawing.Color.Maroon;
+            this.logoutBtn.Font = new System.Drawing.Font("Tahoma", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logoutBtn.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.logoutBtn.Location = new System.Drawing.Point(35, 560);
+            this.logoutBtn.Name = "logoutBtn";
+            this.logoutBtn.Size = new System.Drawing.Size(125, 33);
+            this.logoutBtn.TabIndex = 6;
+            this.logoutBtn.Text = "Log-Out";
+            this.logoutBtn.Click += new System.EventHandler(this.logoutBtn_Click);
+            // 
+            // BookBtn
+            // 
+            this.BookBtn.AutoSize = true;
+            this.BookBtn.BackColor = System.Drawing.Color.Maroon;
+            this.BookBtn.Font = new System.Drawing.Font("Tahoma", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BookBtn.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.BookBtn.Location = new System.Drawing.Point(35, 101);
+            this.BookBtn.Name = "BookBtn";
+            this.BookBtn.Size = new System.Drawing.Size(126, 33);
+            this.BookBtn.TabIndex = 5;
+            this.BookBtn.Text = "Booking";
+            this.BookBtn.Click += new System.EventHandler(this.BookBtn_Click);
             // 
             // panel1
             // 
@@ -112,17 +129,18 @@ namespace BookHotel
             this.RoomPanel.Location = new System.Drawing.Point(204, 59);
             this.RoomPanel.Name = "RoomPanel";
             this.RoomPanel.RowCount = 2;
-            this.RoomPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 126F));
+            this.RoomPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64F));
             this.RoomPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.RoomPanel.Size = new System.Drawing.Size(864, 602);
             this.RoomPanel.TabIndex = 2;
+            this.RoomPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.RoomPanel_Paint);
             // 
             // AddButton
             // 
             this.AddButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.AddButton.Location = new System.Drawing.Point(3, 3);
             this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(162, 116);
+            this.AddButton.Size = new System.Drawing.Size(162, 58);
             this.AddButton.TabIndex = 2;
             this.AddButton.Text = "+ Add Room";
             this.AddButton.UseVisualStyleBackColor = false;
@@ -132,37 +150,23 @@ namespace BookHotel
             // 
             this.LoadRoomsAsCards.AutoScroll = true;
             this.LoadRoomsAsCards.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LoadRoomsAsCards.Location = new System.Drawing.Point(3, 129);
+            this.LoadRoomsAsCards.Location = new System.Drawing.Point(3, 67);
             this.LoadRoomsAsCards.Name = "LoadRoomsAsCards";
             this.LoadRoomsAsCards.Padding = new System.Windows.Forms.Padding(8);
-            this.LoadRoomsAsCards.Size = new System.Drawing.Size(858, 470);
+            this.LoadRoomsAsCards.Size = new System.Drawing.Size(858, 532);
             this.LoadRoomsAsCards.TabIndex = 3;
+            this.LoadRoomsAsCards.Paint += new System.Windows.Forms.PaintEventHandler(this.LoadRoomsAsCards_Paint);
             // 
-            // BookBtn
+            // SogoLogoBox
             // 
-            this.BookBtn.AutoSize = true;
-            this.BookBtn.BackColor = System.Drawing.Color.Maroon;
-            this.BookBtn.Font = new System.Drawing.Font("Tahoma", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BookBtn.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.BookBtn.Location = new System.Drawing.Point(35, 101);
-            this.BookBtn.Name = "BookBtn";
-            this.BookBtn.Size = new System.Drawing.Size(126, 33);
-            this.BookBtn.TabIndex = 5;
-            this.BookBtn.Text = "Booking";
-            this.BookBtn.Click += new System.EventHandler(this.BookBtn_Click);
-            // 
-            // logoutBtn
-            // 
-            this.logoutBtn.AutoSize = true;
-            this.logoutBtn.BackColor = System.Drawing.Color.Maroon;
-            this.logoutBtn.Font = new System.Drawing.Font("Tahoma", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.logoutBtn.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.logoutBtn.Location = new System.Drawing.Point(35, 560);
-            this.logoutBtn.Name = "logoutBtn";
-            this.logoutBtn.Size = new System.Drawing.Size(125, 33);
-            this.logoutBtn.TabIndex = 6;
-            this.logoutBtn.Text = "Log-Out";
-            this.logoutBtn.Click += new System.EventHandler(this.logoutBtn_Click);
+            this.SogoLogoBox.Image = global::BookHotel.Properties.Resources.sogo_letter;
+            this.SogoLogoBox.Location = new System.Drawing.Point(34, 19);
+            this.SogoLogoBox.Name = "SogoLogoBox";
+            this.SogoLogoBox.Size = new System.Drawing.Size(77, 28);
+            this.SogoLogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.SogoLogoBox.TabIndex = 3;
+            this.SogoLogoBox.TabStop = false;
+            this.SogoLogoBox.Resize += new System.EventHandler(this.panel1_Resize);
             // 
             // Admin
             // 
@@ -177,14 +181,15 @@ namespace BookHotel
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Admin";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sogo Hotel Admin";
             this.Load += new System.EventHandler(this.Admin_Load);
             this.HeaderPanel.ResumeLayout(false);
             this.HeaderPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SogoLogoBox)).EndInit();
             this.SidebarPanel.ResumeLayout(false);
             this.SidebarPanel.PerformLayout();
             this.RoomPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.SogoLogoBox)).EndInit();
             this.ResumeLayout(false);
 
         }

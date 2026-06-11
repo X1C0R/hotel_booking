@@ -83,6 +83,16 @@ namespace BookHotel.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CircleBackBTN {
+            get {
+                object obj = ResourceManager.GetObject("CircleBackBTN", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap fan {
             get {
                 object obj = ResourceManager.GetObject("fan", resourceCulture);
@@ -106,6 +116,26 @@ namespace BookHotel.Properties {
         internal static System.Drawing.Bitmap greece_room_popular {
             get {
                 object obj = ResourceManager.GetObject("greece room popular", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap logoutBtn {
+            get {
+                object obj = ResourceManager.GetObject("logoutBtn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap profile {
+            get {
+                object obj = ResourceManager.GetObject("profile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
