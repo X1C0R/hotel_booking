@@ -160,13 +160,13 @@ namespace BookHotel
                 AutoSize = true
             });
 
-            //var cancelBtn = new Button
-            //{
-            //    Text = "Cancel",
-            //    Width = 67,
-            //    Height = 31,
-            //    Location = new Point(471, 17)
-            //};
+            var cancelBtn = new Button
+            {
+                Text = "Cancel",
+                Width = 67,
+                Height = 31,
+                Location = new Point(440, 40)
+            };
 
             var statusColor =
                b.Status == "approved" ? Color.Green :
@@ -178,26 +178,26 @@ namespace BookHotel
                 Text = b.Status ?? "pending",
                 Font = new Font("Tahoma", 11, FontStyle.Bold),
                 ForeColor = statusColor,
-                Location = new Point(471, 17),
+                Location = new Point(440, 17),
                 AutoSize = true
             });
 
-            //cancelBtn.Click += async (s, e) =>
-            //{
-            //    var confirm = MessageBox.Show(
-            //        "Cancel this booking?",
-            //        "Confirm",
-            //        MessageBoxButtons.YesNo
-            //    );
+            cancelBtn.Click += async (s, e) =>
+            {
+                var confirm = MessageBox.Show(
+                    "Cancel this booking?",
+                    "Confirm",
+                    MessageBoxButtons.YesNo
+                );
 
-            //    if (confirm == DialogResult.Yes)
-            //    {
-            //        await AuthService.CancelBooking(b.Id);
-            //        await LoadRecentBookingsAsync();
-            //    }
-            //};
+                if (confirm == DialogResult.Yes)
+                {
+                    await AuthService.CancelBooking(b.Id);
+                    await LoadRecentBookingsAsync();
+                }
+            };
 
-            //panel.Controls.Add(cancelBtn);
+            panel.Controls.Add(cancelBtn);
 
             return panel;
         }

@@ -620,6 +620,39 @@ namespace BookHotel.backend
             }
         }
 
+        public static async Task<string> CancelBooking(Guid bookingId)
+        {
+            try
+            {
+                var supabase = await Initialize();
+
+                // Get booking first
+                var booking = await supabase
+                    .From<Booking>()
+                    .Where(x => x.Id == bookingId)
+                    .Single();
+
+                if (booking == null)
+                    return "Booking not found.";
+
+                // Update booking status
+                await supabase
+                    .From<Booking>()
+                    .Where(x => x.Id == bookingId)
+                    .Set(x => x.Status, "cancelled")
+                    .Update();
+
+                // Optional: make room available again
+                await SetRoomStatus(booking.RoomId, "available");
+
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
 
     }
 }
